@@ -9,6 +9,7 @@ class LoginForm(forms.Form):
 	username = forms.CharField(label='Nome de usuário',max_length=30)
 	password = forms.CharField(label="Senha", max_length=30, widget=forms.PasswordInput)
 
+
 	def clean_username(self):
 		username=self.cleaned_data.get('username')
 		
@@ -37,6 +38,7 @@ class CreateUserForm(forms.Form):
 	username = forms.CharField(label="Nome de usuário", max_length=30)
 	password = forms.CharField(label="Senha", max_length=30, widget=forms.PasswordInput)
 	email = forms.EmailField(label="Email", max_length=30)
+	check = forms.BooleanField(label="Professor?", widget=forms.CheckboxInput)
 
 	def clean_username(self):
 		username = self.cleaned_data.get('username')
@@ -61,7 +63,15 @@ class CreateUserForm(forms.Form):
 		username = self.cleaned_data.get('username')
 		email = self.cleaned_data.get('email')
 		password = self.cleaned_data.get('password')
-		#checa se existe alguem com o nome ou email
+
 		u = User(username=username, email=email)
 		u.set_password(password)
 		u.save()
+
+		
+		if self.cleaned_data.get('check'):
+			grau = "Professor"
+		else:
+			grau = "Estudante"
+		user = Usuario(user=u, grau=grau)
+		user.save()

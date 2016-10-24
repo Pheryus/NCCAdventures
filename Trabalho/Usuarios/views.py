@@ -16,7 +16,7 @@ def create_user(request):
 
 		if form.is_valid():
 			form.save()
-			
+			return HttpResponseRedirect(reverse('Usuarios_createuser'))
 	else:
 		form = CreateUserForm()
 
