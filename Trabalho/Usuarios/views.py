@@ -2,13 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse
 
 from Usuarios.forms import LoginForm, CreateUserForm
 from Usuarios.models import Usuario 
 
-
+@user_passes_test(lambda u: u.is_superuser)	
 def create_user(request):
 
 	if request.method == "POST":

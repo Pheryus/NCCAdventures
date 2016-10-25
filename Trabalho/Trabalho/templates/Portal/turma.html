@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{turma.nome}}{% endblock %}
+
+{% block content %}
+
+<h3>  </h3>
+
+<center> {{turma.nome}}</center>
+
+{% if user.grau == "Professor" %}
+<p>Bem-vindo, professor</p>
+
+
+{% else %}
+<p>Bem-vindo, aluno</p>
+
+{% endif %}
+
+
+
+
+<br><br><br>
+
+<a href="/logout/"> Logout </a>
+
+{% endblock %}

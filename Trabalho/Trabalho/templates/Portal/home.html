@@ -4,24 +4,28 @@
 
 {% block content %}
 
-<h3> Bem-Vindo, {{ user.username}} </h3>
+<h3> Bem-Vindo, {{ usuario.user.username}} </h3>
 
-{% if user.grau == "Professor" %}
+{% if usuario.grau == "Professor" %}
 	<center>Suas turmas</center>
 	<br> <br> <br> <br>
-	
+	{% if not turmas %}
+		<center><b>Você não é professor de nenhuma turma</b></center>
+	{% else %}
 		{% for i in turmas %}
-			<a href="/home/{{turmas.id}}">{{ turmas.nome }}
+			<center><a href="/turma/{{i.id}}">{{ i.nome }}</center>
 		{% endfor %}
+	{% endif %}
+
 {% else %}
 	<center>Turmas que você está cadastrado</center>
 	<br> <br> <br> <br>
 
 	{% if not turmas %}
-		<center><b>Meu deus, você é mt bosta. Vai estudar em alguma cadeira, seu cocô!</p></b>
+		<center><b>Você não está cadastrado em nenhuma cadeira</p></b>
 	{% else %}
 		{% for i in turmas %}
-			<a href="/home/{{turmas.id}}">{{ turmas.nome }}
+			<center><a href="/turma/{{i.id}}">{{ i.nome }}</center>
 		{% endfor %}
 
 	{% endif %}

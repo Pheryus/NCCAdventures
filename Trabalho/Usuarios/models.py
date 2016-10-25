@@ -18,4 +18,4 @@ class Turma(models.Model):
 	alunos = models.ManyToManyField(Usuario, related_name="Estudantes")
 
 	def __unicode__(self):
-		return "%s %s" % (self.nome, self.professor)
+		return "%s" % (self.nome)
