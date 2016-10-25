@@ -17,10 +17,12 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from Usuarios.views import *
+from Portal.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', login_view, name="Usuarios_index"),
     url(r'^createuser/$', create_user, name="Usuarios_createuser"),
-    url(r'^logout/$', logout_view, name="Usuarios_logout")
+    url(r'^logout/$', logout_view, name="Usuarios_logout"),
+    url(r'^home/$', home, name="Portal_home"),
 ]

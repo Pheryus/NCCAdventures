@@ -30,7 +30,7 @@ def login_view(request):
 		if form.is_valid():
 			user = form.save()			
 			login(request, user)
-			return HttpResponseRedirect(prox)
+			return HttpResponseRedirect(reverse('Portal_home'))
 	else:
 		form = LoginForm()
 

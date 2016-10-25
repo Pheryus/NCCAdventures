@@ -38,7 +38,7 @@ class CreateUserForm(forms.Form):
 	username = forms.CharField(label="Nome de usuário", max_length=30)
 	password = forms.CharField(label="Senha", max_length=30, widget=forms.PasswordInput)
 	email = forms.EmailField(label="Email", max_length=30)
-	check = forms.BooleanField(label="Professor?", widget=forms.CheckboxInput)
+	check = forms.BooleanField(label="Professor?", widget=forms.CheckboxInput, required=False)
 
 	def clean_username(self):
 		username = self.cleaned_data.get('username')

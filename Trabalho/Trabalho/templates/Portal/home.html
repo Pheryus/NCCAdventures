@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h3> Bem-Vindo, {{ user.username}} </h3>
+
+{% if user.grau == "Professor" %}
+	<center>Suas turmas</center>
+	<br> <br> <br> <br>
+	
+		{% for i in turmas %}
+			<a href="/home/{{turmas.id}}">{{ turmas.nome }}
+		{% endfor %}
+{% else %}
+	<center>Turmas que você está cadastrado</center>
+	<br> <br> <br> <br>
+
+	{% if not turmas %}
+		<center><b>Meu deus, você é mt bosta. Vai estudar em alguma cadeira, seu cocô!</p></b>
+	{% else %}
+		{% for i in turmas %}
+			<a href="/home/{{turmas.id}}">{{ turmas.nome }}
+		{% endfor %}
+
+	{% endif %}
+
+{% endif %}
+
+
+
+
+
+<br><br><br>
+
+<a href="/logout/"> Logout </a>
+
+{% endblock %}
