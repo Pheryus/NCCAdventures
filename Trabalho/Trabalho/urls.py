@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^createuser/$', create_user, name="Usuarios_createuser"),
     url(r'^logout/$', logout_view, name="Usuarios_logout"),
     url(r'^home/$', home, name="Portal_home"),
+    url(r'^criatrab/$', criaTrabalho, name="Cria_Trab"),
     url(r'^turma/([0-9]+)/$', turma, name="Portal_turma")
 ]

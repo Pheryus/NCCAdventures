@@ -9,9 +9,12 @@ class Trabalho(models.Model):
 	turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
 	descricao = models.CharField(max_length=500)
 
+	def __str__(self):
+		return self.nome
 
 class Submissao(models.Model):
 	nome = models.CharField(max_length=30)
 	trabalhoKey = models.ForeignKey(Trabalho)
 	trabalho = models.CharField(max_length=500)
+
 

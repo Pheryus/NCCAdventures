@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from Usuarios.models import Usuario, Turma
 from Portal.models import *
+from Portal.forms import TrabalhoForm
+
 
 @login_required
 def home(request):
@@ -14,6 +16,23 @@ def home(request):
 	else:
 		turmas = Turma.objects.filter(alunos__id=usuario.id)
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'turmas' : turmas})
+
+
+
+@login_required
+def criaTrabalho(request):
+	usuario = getUsuario(request)
+	if usuario.grau != "Professor":
+		return Http404
+
+	if request.method == "POST":
+		form = TrabalhoForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse('CriaTrabalho'))
+	else:
+		form = TrabalhoForm()
+	return render(request, 'Portal/trabalho.html', {'form' : form})
 
 def getUsuario(request):
 	current_user = request.user

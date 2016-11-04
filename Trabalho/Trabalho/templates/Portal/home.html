@@ -7,6 +7,7 @@
 <h3> Bem-Vindo, {{ usuario.user.username}} </h3>
 
 {% if usuario.grau == "Professor" %}
+	<!--
 	<center>Suas turmas</center>
 	<br> <br> <br> <br>
 	{% if not turmas %}
@@ -16,6 +17,8 @@
 			<center><a href="/turma/{{i.id}}">{{ i.nome }}</center>
 		{% endfor %}
 	{% endif %}
+	>-->
+	<center><a href="/criatrab/"> Criar trabalho</center>
 
 {% else %}
 	<center>Turmas que você está cadastrado</center>
