@@ -5,7 +5,8 @@ from Usuarios.models import Usuario, Turma
 from Portal.models import *
 from Portal.forms import TrabalhoForm
 from django.core.urlresolvers import reverse
-from random import *
+import random
+import string
 
 @login_required
 def home(request):
@@ -19,18 +20,19 @@ def home(request):
 	if request.method == "POST":
 		for i in trabalhos:
 			if request.POST.get(str(i.id)):
-				i.status = "Em execução"
-				i.password = geraSenha(6)
+				if (i.status == "Não enviado"):
+					i.status = "Em execução"
+					i.password = geraSenha(6)
+				elif (i.status == "Em execução"):
+					i.status = "Finalizado"
 				i.save()
 				return HttpResponseRedirect(reverse('Portal_home'))
 
-	
+
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
-def geraSenha(N):
-	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
-
-
+def geraSenha(n):
+	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(n))
 
 @login_required
 def criaTrabalho(request):
@@ -49,16 +51,40 @@ def criaTrabalho(request):
 
 
 @login_required
-def modificaTrabalho(request):
+def modificaTrabalho(request, id):
+	usuario = getUsuario(request)
+
+	if ehProfessor(usuario):
+		trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
+		if not autenticacaoProfessor(trabalhos, id):
+			raise Http404
+
+	else:
+		raise Http404
+
 
 	if request.method == "POST":
 		form = TrabalhoForm(request.POST, request.FILES)
 	else:
 		form = TrabalhoForm()
 
-	return render(request, 'Portal/modificatrabalho.html', {'form' : form})
+	return render(request, 'Portal/modificatrabalho.html')
 
 
+
+#Testa se o professor é professor da turma especifica
+def autenticacaoProfessor(trabalhos, id):
+
+	for t in trabalhos:
+		if t.id == id:
+			return True
+	return False
+
+
+def ehProfessor(usuario):
+	if usuario.grau != "Professor":
+		return False
+	return True
 
 def getUsuario(request):
 	current_user = request.user

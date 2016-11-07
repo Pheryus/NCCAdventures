@@ -11,8 +11,6 @@ class Trabalho(models.Model):
 	file =  models.FileField(blank=True)
 	status = models.CharField(max_length=30, default="Não enviado")
 	password = models.CharField(max_length=8, default="")
-	inicio = models.DataField()
-	fim = models.DataField()
 
 	def __str__(self):
 		return self.nome

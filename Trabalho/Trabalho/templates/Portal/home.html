@@ -4,32 +4,50 @@
 
 {% block content %}
 
-<h3> Bem-Vindo, {{ usuario.user.username}} </h3>
+<h3> Bem-Vindo, {{ usuario.user.username }} </h3>
+{% load staticfiles %}
+<link rel='stylesheet' type='text/css' href="{% static 'css/base.css' %}" />
 
 {% if usuario.grau == "Professor" %}
-	<!--
-	<center>Suas turmas</center>
-	<br> <br> <br> <br>
-	{% if not turmas %}
-		<center><b>Você não é professor de nenhuma turma</b></center>
-	{% else %}
-		{% for i in turmas %}
-			<center><a href="/turma/{{i.id}}">{{ i.nome }}</center>
-		{% endfor %}
-	{% endif %}
-	>-->
 	<center><a href="/criatrab/"> Criar trabalho</center></a>
 
 	<h2>Seus Trabalhos</h2>
 
-	{% for i in trabalhos %}
-		<center><a href="/trabalho/{{i.id}}">{{ i.nome }} : {{ i.status }}</center></a>
-		{% if i.status == "Não enviado" %}
-			<form action = "."method="post"> {% csrf_token %}
-			<input type="submit" name="{{ i.id }}" value="Submeter"/>
-			</form>
-		{% endif %}
-	{% endfor %}
+	<table>
+
+		<thread>
+			<th>Trabalho</th>
+			<th>Estado</th>
+			<th>Aspargos</th>
+			<th>Trabalhos</th>
+		</thread>
+
+		{% for i in trabalhos %}
+			<tr>
+				<td align="center" valign="middle"><a href="/trabalho/{{i.id}}"> <input type="button" name="{{ i.id }}" value="{{ i.nome }}"/></td>
+
+				<td align="center" valign="middle"> {{ i.status }}</td>
+				{% if i.status == "Não enviado" or i.status == "Em execução" %}
+					<form action = "."method="post"> {% csrf_token %}
+					{% if i.status == "Não enviado" %}
+						<td><input type="submit" name="{{ i.id }}" value="Submeter"/></td>
+					{% else %}
+						{% if i.status == "Em execução" %}
+							<td><input type="submit" name="{{ i.id }}" value="Encerrar"/></td>
+						{% endif %}
+						<td><input type="submit" name="{{ i.id }}" value="Recebidos"/></td>
+
+					{% endif %}
+					</form>
+
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</table>
+
+{% else %}
+
+
 
 {% endif %}
 

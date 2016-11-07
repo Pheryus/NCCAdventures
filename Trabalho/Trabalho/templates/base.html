@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<hml lang"pt-br">
+<html lang"pt-br">
+{% load staticfiles %}
 
+<link rel='stylesheet' type='text/css' href="{% static 'css/base.css' %}" />
+<center>
 	<head>
 		<meta charset="utf-8">
 		<title>{% block title %} {% endblock %}</title>
@@ -11,5 +14,29 @@
 		{% block content %} {% endblock %}
 		{% block extrajs %} {% endblock %}
 	</body>
+
+	<style>
+		table, th, td {
+			border: 1px solid #D4E0EE;
+			border-collapse: collapse;
+			font-family: "Trebuchet MS", Arial, sans-serif;
+			color: #555;
+			width: 50%;
+		}
+
+		th,td {
+			padding: 4px;
+		}
+
+		thead, th{
+			text-align: center;
+			background: #E6EDF55;
+			color: #4F76A3;
+			font-size: 100% !important;
+		}
+
+	</style>
+</center>
+
 
 </hml>
