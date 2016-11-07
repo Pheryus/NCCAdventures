@@ -18,25 +18,23 @@
 		{% endfor %}
 	{% endif %}
 	>-->
-	<center><a href="/criatrab/"> Criar trabalho</center>
+	<center><a href="/criatrab/"> Criar trabalho</center></a>
 
-{% else %}
-	<center>Turmas que você está cadastrado</center>
-	<br> <br> <br> <br>
+	<h2>Seus Trabalhos</h2>
 
-	{% if not turmas %}
-		<center><b>Você não está cadastrado em nenhuma cadeira</p></b>
-	{% else %}
-		{% for i in turmas %}
-			<center><a href="/turma/{{i.id}}">{{ i.nome }}</center>
-		{% endfor %}
-
-	{% endif %}
+	{% for i in trabalhos %}
+		<center><a href="/trabalho/{{i.id}}">{{ i.nome }} : {{ i.status }}</center></a>
+		{% if i.status == "Não enviado" %}
+			<form action = "."method="post"> {% csrf_token %}
+			<input type="submit" name="{{ i.id }}" value="Submeter"/>
+			</form>
+		{% endif %}
+	{% endfor %}
 
 {% endif %}
 
 
-
+<font size="2"><h2><a href="/home/"> Voltar </a></h2></font>
 
 
 <br><br><br>

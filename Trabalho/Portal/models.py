@@ -6,8 +6,13 @@ from Usuarios.models import Usuario, Turma
 # Create your models here.
 class Trabalho(models.Model):
 	nome = models.CharField(max_length=30)
-	turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
-	descricao = models.CharField(max_length=500)
+	professor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+	descricao = models.CharField(max_length=500, blank=True)
+	file =  models.FileField(blank=True)
+	status = models.CharField(max_length=30, default="Não enviado")
+	password = models.CharField(max_length=8, default="")
+	inicio = models.DataField()
+	fim = models.DataField()
 
 	def __str__(self):
 		return self.nome
