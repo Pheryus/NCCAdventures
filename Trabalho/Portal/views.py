@@ -29,7 +29,6 @@ def home(request):
 				return HttpResponseRedirect(reverse('Portal_home'))
 
 
-
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
 def geraSenha(n):
@@ -77,7 +76,9 @@ def modificaTrabalho(request, id):
 def autenticacaoProfessor(trabalhos, id):
 
 	for t in trabalhos:
-		if t.id == id:
+		print(t.id, id)
+		if t.id == int(id):
+			print("Ola")
 			return True
 	return False
 

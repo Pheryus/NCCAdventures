@@ -19,7 +19,6 @@ class TrabalhoForm(forms.ModelForm):
 
 
 	def save(self, professor):
-		print(professor)
 		trabalho = Trabalho(nome=self.cleaned_data.get('nome'),
 			descricao=self.cleaned_data.get('descricao'),
 			file=self.cleaned_data.get('file'),
