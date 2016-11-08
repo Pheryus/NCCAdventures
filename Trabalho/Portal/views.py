@@ -29,6 +29,7 @@ def home(request):
 				return HttpResponseRedirect(reverse('Portal_home'))
 
 
+
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
 def geraSenha(n):

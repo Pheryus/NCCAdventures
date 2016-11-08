@@ -19,25 +19,29 @@
 			<th>Trabalho</th>
 			<th>Estado</th>
 			<th>Aspargos</th>
+			<th>KeyCode</th>
 			<th>Trabalhos</th>
 		</thread>
 
 		{% for i in trabalhos %}
 			<tr>
-				<td align="center" valign="middle"><a href="/trabalho/{{i.id}}"> <input type="button" name="{{ i.id }}" value="{{ i.nome }}"/></td>
+				<td align="center" valign="middle"><a href="/trabalho/{{ i.id }}"> <input type="button" name="t{{ i.id }}" value="{{ i.nome }}"/></td>
 
 				<td align="center" valign="middle"> {{ i.status }}</td>
 				{% if i.status == "Não enviado" or i.status == "Em execução" %}
-					<form action = "."method="post"> {% csrf_token %}
+					<form action = "." method="post"> {% csrf_token %}
 					{% if i.status == "Não enviado" %}
-						<td><input type="submit" name="{{ i.id }}" value="Submeter"/></td>
+						<td> <input type="submit" name="{{ i.id }}" value="Submeter"/></a></td>
 					{% else %}
 						{% if i.status == "Em execução" %}
 							<td><input type="submit" name="{{ i.id }}" value="Encerrar"/></td>
+							<td><font color="red">{{ i.password }}</font></td>
 						{% endif %}
-						<td><input type="submit" name="{{ i.id }}" value="Recebidos"/></td>
-
 					{% endif %}
+				{% else %}
+					<td> </td>
+					<td> </td>
+					<td><a href="/recebidos/{{ i.id }}"><input type="button" name="r{{ i.id }}" value="Recebidos"/></td>
 					</form>
 
 				{% endif %}
@@ -50,9 +54,6 @@
 
 
 {% endif %}
-
-
-<font size="2"><h2><a href="/home/"> Voltar </a></h2></font>
 
 
 <br><br><br>
