@@ -56,19 +56,32 @@ def modificaTrabalho(request, id):
 
 	if ehProfessor(usuario):
 		trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
+
 		if not autenticacaoProfessor(trabalhos, id):
 			raise Http404
-
 	else:
 		raise Http404
 
-
+	trabalho = Trabalho.objects.filter(id=id)
+	trabalho = trabalho[0]
 	if request.method == "POST":
-		form = TrabalhoForm(request.POST, request.FILES)
+		form = TrabalhoForm(request.POST,instance=trabalho)
+		if form.is_valid():
+			form.save(usuario)
+			return HttpResponseRedirect(reverse('Portal_home'))
 	else:
-		form = TrabalhoForm()
+		form = TrabalhoForm(instance=trabalho)
 
-	return render(request, 'Portal/modificatrabalho.html')
+	return render(request, 'Portal/modificatrabalho.html', {'form' : form })
+
+
+def trabalhosRecebidos(request, id):
+
+	trabs = Submissao.objects.filter(trabalhoKey__id=id)
+
+
+	return render(request, 'Portal/trabsrecebidos.html', {'trabs' : trabs})
+
 
 
 
@@ -78,7 +91,6 @@ def autenticacaoProfessor(trabalhos, id):
 	for t in trabalhos:
 		print(t.id, id)
 		if t.id == int(id):
-			print("Ola")
 			return True
 	return False
 

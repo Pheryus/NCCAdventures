@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'^criatrab/$', criaTrabalho, name="Cria_Trab"),
     url(r'^turma/([0-9]+)/$', turma, name="Portal_turma"),
     url(r'^trabalho/([0-9]+)/$', modificaTrabalho, name="Portal_modificaTrabalho"),
+    url(r'^recebidos/([0-9]+)/$', trabalhosRecebidos, name="Portal_trabalhoRecebidos"),
+
 ]

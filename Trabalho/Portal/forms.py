@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from Portal.models import *
 
 class TrabalhoForm(forms.ModelForm):
-	
 
 	descricao = forms.CharField(widget=forms.Textarea(attrs={'cols': 40, 'rows': 10}), required=False)
 	class Meta:
