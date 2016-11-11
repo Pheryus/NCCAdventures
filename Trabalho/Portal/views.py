@@ -14,19 +14,19 @@ def home(request):
 
 	if usuario.grau == "Professor":
 		trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
-	else:
-		trabalhos = []
+		if request.method == "POST":
+			for i in trabalhos:
+				if request.POST.get(str(i.id)):
+					if (i.status == "Não enviado"):
+						i.status = "Em execução"
+						i.password = geraSenha(6)
+					elif (i.status == "Em execução"):
+						i.status = "Finalizado"
+					i.save()
+					return HttpResponseRedirect(reverse('Portal_home'))
 
-	if request.method == "POST":
-		for i in trabalhos:
-			if request.POST.get(str(i.id)):
-				if (i.status == "Não enviado"):
-					i.status = "Em execução"
-					i.password = geraSenha(6)
-				elif (i.status == "Em execução"):
-					i.status = "Finalizado"
-				i.save()
-				return HttpResponseRedirect(reverse('Portal_home'))
+	else:
+		trabalhos = Trabalho.objects.filter(status="Em execução")
 
 
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
@@ -76,18 +76,12 @@ def modificaTrabalho(request, id):
 
 
 def trabalhosRecebidos(request, id):
-
 	trabs = Submissao.objects.filter(trabalhoKey__id=id)
-
-
 	return render(request, 'Portal/trabsrecebidos.html', {'trabs' : trabs})
-
-
 
 
 #Testa se o professor é professor da turma especifica
 def autenticacaoProfessor(trabalhos, id):
-
 	for t in trabalhos:
 		print(t.id, id)
 		if t.id == int(id):
@@ -107,6 +101,14 @@ def getUsuario(request):
 	return user[0]
 
 
+def visualizaTrabalho(request, id):
+
+	trabalho = Trabalho.objects.filter(id=id)[0]
+	professor = trabalho.professor
+	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho})
+
+
+
 @login_required
 def turma(request, id):
 	usuario = getUsuario(request)
@@ -119,5 +121,4 @@ def turma(request, id):
 		raise Http404
 	else:
 		turma = turmas[0]
-	return render(request, 'Portal/turma.html', {'turma' : turma})	
-
+	return render(request, 'Portal/turma.html', {'turma' : turma})

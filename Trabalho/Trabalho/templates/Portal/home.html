@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h3> Bem-Vindo, {{ usuario.user.username }} </h3>
+<h1> Bem-Vindo, {{ usuario.user.username }} </h1>
 {% load staticfiles %}
 <link rel='stylesheet' type='text/css' href="{% static 'css/base.css' %}" />
 
@@ -50,6 +50,18 @@
 	</table>
 
 {% else %}
+	<p>&nbsp;</p>
+	<h2>Trabalhos para fazer</h2>
+
+	{% for i in trabalhos %}
+		 <p><a href="/trab/{{ i.id }}"> {{ i.nome }}</a> ({{ i.professor.user.username }})
+
+		<form action = "."	method="post"> {% csrf_token %}
+			KeyCode: <input type="text" name="keycode {{ i.id }}" required="required"/>
+		</p></form>
+
+
+	{% endfor %}
 
 
 

@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-
+from django.conf import settings
+from django.conf.urls.static import static
 from Usuarios.views import *
 from Portal.views import *
 
@@ -28,6 +29,11 @@ urlpatterns = [
     url(r'^criatrab/$', criaTrabalho, name="Cria_Trab"),
     url(r'^turma/([0-9]+)/$', turma, name="Portal_turma"),
     url(r'^trabalho/([0-9]+)/$', modificaTrabalho, name="Portal_modificaTrabalho"),
+    url(r'^trab/([0-9]+)/$', visualizaTrabalho, name="Portal_visualizaTrabalho"),
     url(r'^recebidos/([0-9]+)/$', trabalhosRecebidos, name="Portal_trabalhoRecebidos"),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

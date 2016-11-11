@@ -8,7 +8,7 @@ class Trabalho(models.Model):
 	nome = models.CharField(max_length=30)
 	professor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 	descricao = models.CharField(max_length=500, blank=True)
-	file =  models.FileField(blank=True)
+	file =  models.FileField()
 	status = models.CharField(max_length=30, default="Não enviado")
 	password = models.CharField(max_length=8, default="")
 

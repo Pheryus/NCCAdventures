@@ -8,9 +8,11 @@
 		<meta charset="utf-8">
 		<title>{% block title %} {% endblock %}</title>
 		{% block extrahead %}{% endblock %}
+
+		<img src="http://wiki.inf.ufsm.br/lib/exe/fetch.php?media=wiki:logo.png">
 	</head> 
 
-	<body>
+	<body style="background-color: lightgray">
 		{% block content %} {% endblock %}
 		{% block extrajs %} {% endblock %}
 	</body>

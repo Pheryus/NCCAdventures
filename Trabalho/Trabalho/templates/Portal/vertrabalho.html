@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Trabalho{% endblock %}
+
+{% block content %}
+
+
+
+<h2>Nome : {{ trabalho.nome }} </h2>
+<p>Professor responsável: {{ professor.user.username }}</p>
+{% if professor.user.username == "Andrea" %}
+    <img src = http://www.projetos.unijui.edu.br/eradrs2017/img/andrea.jpg>
+{% else %}
+    {% if professor.user.username == "jvlima" %}
+        <img src = http://moais.imag.fr/membres/joao.lima/images/IMG_0250.JPG>
+    {% endif %}
+{% endif %}
+<p><h3>Descrição</h3></p>
+<p>{{ trabalho.descricao }}</p>
+<p>Arquivo: {% if not trabalho.file %}  -  {% else %} {{ trabalho.file }} {% endif %}</p>
+
+
+	<footer>
+		  <a href="/home"> Home </a>
+    </footer>
+
+
+
+
+{% endblock %}
