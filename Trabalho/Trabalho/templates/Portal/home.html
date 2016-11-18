@@ -54,9 +54,10 @@
 	<h2>Trabalhos para fazer</h2>
 
 	{% for i in trabalhos %}
-		 <p><a href="/trab/{{ i.id }}"> {{ i.nome }}</a> ({{ i.professor.user.username }})
+
 
 		<form action = "."	method="post"> {% csrf_token %}
+			<p><input type="submit" name= "submit {{ i.id }}"  value={{ i.professor.user.username }}>
 			KeyCode: <input type="text" name="keycode {{ i.id }}" required="required"/>
 		</p></form>
 

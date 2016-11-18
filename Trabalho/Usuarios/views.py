@@ -23,6 +23,10 @@ def create_user(request):
 	return render(request, 'Usuarios/add_user.html', { 'form' : form })
 
 def login_view(request):
+
+	if request.user.is_authenticated():
+		return HttpResponseRedirect(reverse('Portal_home'))
+
 	prox = request.GET.get('prox', '/login/')
 	if request.method == "POST":
 		form = LoginForm(request.POST)

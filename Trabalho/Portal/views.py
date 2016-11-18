@@ -28,6 +28,16 @@ def home(request):
 	else:
 		trabalhos = Trabalho.objects.filter(status="Em execução")
 
+		if request.method == "POST":
+			for i in trabalhos:
+				if request.POST.get("submit" + str(i.id)):
+					print("TESTE")
+					submissao = Submissao.objects.filter(trabalhoKey__id=i.id)
+					submissao = submissao[0]
+					print(submissao)
+					if request.POST["keycode" + str(i.id)] == i.password:
+						pass
+
 
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
@@ -39,16 +49,24 @@ def criaTrabalho(request):
 	usuario = getUsuario(request)
 	if usuario.grau != "Professor":
 		return Http404
-	print(usuario.id)
+
 	if request.method == "POST":
 		form = TrabalhoForm(request.POST, request.FILES)
 		if form.is_valid():
 			form.save(usuario)
+			novotrabalho = Trabalho.objects.filter(nome=form.cleaned_data["nome"], professor=usuario)
+			adicionarSubmissaoAlunos(novotrabalho)
 			return HttpResponseRedirect(reverse('Cria_Trab'))
 	else:
 		form = TrabalhoForm()
 	return render(request, 'Portal/criatrabalho.html', {'form' : form})
 
+def adicionarSubmissaoAlunos(novotrabalho):
+	novotrabalho = novotrabalho[0]
+	alunos = Usuario.objects.filter(grau="Estudante")
+	for i in alunos:
+		submissao = Submissao(nome=novotrabalho.nome, trabalhoKey=novotrabalho)
+		submissao.save()
 
 @login_required
 def modificaTrabalho(request, id):
