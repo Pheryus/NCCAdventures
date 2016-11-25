@@ -30,14 +30,14 @@ def home(request):
 
 		if request.method == "POST":
 			for i in trabalhos:
-				if request.POST.get("submit" + str(i.id)):
-					print("TESTE")
+				if request.POST.get("submit " + str(i.id)):
 					submissao = Submissao.objects.filter(trabalhoKey__id=i.id)
 					submissao = submissao[0]
-					print(submissao)
-					if request.POST["keycode" + str(i.id)] == i.password:
-						pass
 
+					if request.POST["keycode " + str(i.id)] == i.password:
+						return HttpResponseRedirect(reverse("Portal_visualizaTrabalho", i.id))
+					else:
+						raise Http404
 
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
