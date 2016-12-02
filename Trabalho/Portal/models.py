@@ -18,7 +18,8 @@ class Trabalho(models.Model):
 class Submissao(models.Model):
 	nome = models.CharField(max_length=30)
 	correctPassword = models.BooleanField(default=False)
-	trabalhoKey = models.OneToOneField(Trabalho, on_delete=models.CASCADE, primary_key=True)
+	aluno = models.OneToOneField(Usuario, on_delete= models.CASCADE)
+	trabalhoKey = models.OneToOneField(Trabalho, on_delete = models.CASCADE, primary_key=True)
 	trabalho = models.CharField(max_length=500)
 
 

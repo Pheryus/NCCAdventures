@@ -19,6 +19,14 @@
 <p>{{ trabalho.descricao }}</p>
 <p>Arquivo: {% if not trabalho.file %}  -  {% else %} {{ trabalho.file }} {% endif %}</p>
 
+<p>
+
+    Seu Trabalho:
+    <form action = "." method="post"> {% csrf_token %}
+    <p><input type="text" name="envio" required="required" value="""/></a></p>
+
+
+</p>
 
 	<footer>
 		  <a href="/home"> Home </a>

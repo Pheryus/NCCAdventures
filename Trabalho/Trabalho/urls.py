@@ -29,9 +29,8 @@ urlpatterns = [
     url(r'^criatrab/$', criaTrabalho, name="Cria_Trab"),
     url(r'^turma/([0-9]+)/$', turma, name="Portal_turma"),
     url(r'^trabalho/([0-9]+)/$', modificaTrabalho, name="Portal_modificaTrabalho"),
-    url(r'^trab/([0-9]+)/$', visualizaTrabalho, name="Portal_visualizaTrabalho"),
+    url(r'^trab/(?P<id>\d+)/$', visualizaTrabalho, name="Portal_visualizaTrabalho"),
     url(r'^recebidos/([0-9]+)/$', trabalhosRecebidos, name="Portal_trabalhoRecebidos"),
-
 ]
 
 if settings.DEBUG:

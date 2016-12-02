@@ -31,13 +31,11 @@ def home(request):
 		if request.method == "POST":
 			for i in trabalhos:
 				if request.POST.get("submit " + str(i.id)):
-					submissao = Submissao.objects.filter(trabalhoKey__id=i.id)
-					submissao = submissao[0]
-
-					if request.POST["keycode " + str(i.id)] == i.password:
-						return HttpResponseRedirect(reverse("Portal_visualizaTrabalho", i.id))
+					print(Trabalho.objects.filter(id=i.id)[0].password)
+					if request.POST["keycode " + str(i.id)] == Trabalho.objects.filter(id=i.id)[0].password:
+						return HttpResponseRedirect(reverse("Portal_visualizaTrabalho",  kwargs = {"id" : i.id } ))
 					else:
-						raise Http404
+						return HttpResponseRedirect(reverse('Portal_home'))
 
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
 
@@ -54,19 +52,11 @@ def criaTrabalho(request):
 		form = TrabalhoForm(request.POST, request.FILES)
 		if form.is_valid():
 			form.save(usuario)
-			novotrabalho = Trabalho.objects.filter(nome=form.cleaned_data["nome"], professor=usuario)
-			adicionarSubmissaoAlunos(novotrabalho)
 			return HttpResponseRedirect(reverse('Cria_Trab'))
 	else:
 		form = TrabalhoForm()
 	return render(request, 'Portal/criatrabalho.html', {'form' : form})
 
-def adicionarSubmissaoAlunos(novotrabalho):
-	novotrabalho = novotrabalho[0]
-	alunos = Usuario.objects.filter(grau="Estudante")
-	for i in alunos:
-		submissao = Submissao(nome=novotrabalho.nome, trabalhoKey=novotrabalho)
-		submissao.save()
 
 @login_required
 def modificaTrabalho(request, id):
@@ -97,7 +87,6 @@ def trabalhosRecebidos(request, id):
 	trabs = Submissao.objects.filter(trabalhoKey__id=id)
 	return render(request, 'Portal/trabsrecebidos.html', {'trabs' : trabs})
 
-
 #Testa se o professor é professor da turma especifica
 def autenticacaoProfessor(trabalhos, id):
 	for t in trabalhos:
@@ -119,13 +108,24 @@ def getUsuario(request):
 	return user[0]
 
 
+def criandoSubmissao(usuario, id, trabalho):
+	new = Submissao(nome="", correctPassword=True, aluno=usuario, trabalhoKey=trabalho, trabalho="")
+	new.save()
+	return new
+
 def visualizaTrabalho(request, id):
+	usuario = getUsuario(request)
 
 	trabalho = Trabalho.objects.filter(id=id)[0]
+	submissao = Submissao.objects.filter(trabalhoKey=trabalho, aluno=usuario)
+
+	if not submissao:
+		submissao = criandoSubmissao(usuario, id, trabalho)
+	else:
+		submissao = submissao[0]
+
 	professor = trabalho.professor
-	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho})
-
-
+	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho, "submissao" : submissao})
 
 @login_required
 def turma(request, id):
@@ -134,7 +134,7 @@ def turma(request, id):
 		turmas = Turma.objects.filter(professor__id=usuario.id, id=id)
 	else:
 		turmas = Turma.objects.filter(alunos__id=usuario.id, id=id)
-	
+
 	if not turmas:
 		raise Http404
 	else:
