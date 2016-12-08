@@ -13,9 +13,37 @@ def home(request):
 	usuario = getUsuario(request)
 
 	if usuario.grau == "Professor":
-		trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
-		if request.method == "POST":
-			for i in trabalhos:
+		return homeProfessor(request, usuario)
+	else:
+		return homeAluno(request, usuario)
+
+
+def homeAluno(request, usuario):
+	trabalhos = Trabalho.objects.filter(status="Em execução")
+	submissao = Submissao.objects.filter(aluno__id=usuario.id)
+	if submissao:
+		submissao = submissao[0]
+
+	if request.method == "POST":
+		for i in trabalhos:
+			if request.POST.get("submit " + str(i.id)):
+				if request.POST.get("keycode " + str(i.id), -1) == Trabalho.objects.filter(id=i.id)[0].password \
+				or submissao:
+					return HttpResponseRedirect(reverse("Portal_visualizaTrabalho",  kwargs = {"id" : i.id } ))
+				else:
+					return HttpResponseRedirect(reverse('Portal_home'))
+
+	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos, 'submissao' : submissao})
+
+def homeProfessor(request, usuario):
+	trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
+
+	if request.method == "POST":
+		for i in trabalhos:
+			#mudar estado de algum trabalho
+
+			if not i.removido:
+				print(request.POST)
 				if request.POST.get(str(i.id)):
 					if (i.status == "Não enviado"):
 						i.status = "Em execução"
@@ -25,19 +53,14 @@ def home(request):
 					i.save()
 					return HttpResponseRedirect(reverse('Portal_home'))
 
-	else:
-		trabalhos = Trabalho.objects.filter(status="Em execução")
-
-		if request.method == "POST":
-			for i in trabalhos:
-				if request.POST.get("submit " + str(i.id)):
-					print(Trabalho.objects.filter(id=i.id)[0].password)
-					if request.POST["keycode " + str(i.id)] == Trabalho.objects.filter(id=i.id)[0].password:
-						return HttpResponseRedirect(reverse("Portal_visualizaTrabalho",  kwargs = {"id" : i.id } ))
-					else:
-						return HttpResponseRedirect(reverse('Portal_home'))
+				#remover algum trabalho
+				elif request.POST.get("remover " + str(i.id)):
+					i.removido = True
+					i.save()
+					return HttpResponseRedirect(reverse('Portal_home'))
 
 	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos})
+
 
 def geraSenha(n):
 	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(n))
@@ -51,7 +74,7 @@ def criaTrabalho(request):
 	if request.method == "POST":
 		form = TrabalhoForm(request.POST, request.FILES)
 		if form.is_valid():
-			form.save(usuario)
+			form.salvandoInstancia(usuario)
 			return HttpResponseRedirect(reverse('Cria_Trab'))
 	else:
 		form = TrabalhoForm()
@@ -62,9 +85,11 @@ def criaTrabalho(request):
 def modificaTrabalho(request, id):
 	usuario = getUsuario(request)
 
+
+	"""Checa se é professor"""
+
 	if ehProfessor(usuario):
 		trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
-
 		if not autenticacaoProfessor(trabalhos, id):
 			raise Http404
 	else:
@@ -108,8 +133,8 @@ def getUsuario(request):
 	return user[0]
 
 
-def criandoSubmissao(usuario, id, trabalho):
-	new = Submissao(nome="", correctPassword=True, aluno=usuario, trabalhoKey=trabalho, trabalho="")
+def criandoSubmissao(usuario, id, trabalho, password):
+	new = Submissao(nome="", password=password, aluno=usuario, trabalhoKey=trabalho, trabalho="")
 	new.save()
 	return new
 
@@ -118,14 +143,14 @@ def visualizaTrabalho(request, id):
 
 	trabalho = Trabalho.objects.filter(id=id)[0]
 	submissao = Submissao.objects.filter(trabalhoKey=trabalho, aluno=usuario)
-
+	form = TrabalhoForm(instance=trabalho)
 	if not submissao:
-		submissao = criandoSubmissao(usuario, id, trabalho)
+		submissao = criandoSubmissao(usuario, id, trabalho, trabalho.password)
 	else:
 		submissao = submissao[0]
 
 	professor = trabalho.professor
-	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho, "submissao" : submissao})
+	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho, "submissao" : submissao, "form" : form})
 
 @login_required
 def turma(request, id):

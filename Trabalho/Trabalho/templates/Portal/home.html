@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1> Bem-Vindo, {{ usuario.user.username }} </h1>
+<h4> Bem-Vindo, {{ usuario.user.username }} </h4>
 {% load staticfiles %}
 <link rel='stylesheet' type='text/css' href="{% static 'css/base.css' %}" />
 
@@ -21,31 +21,40 @@
 			<th>Estados</th>
 			<th>KeyCode</th>
 			<th>Trabalhos</th>
+			<th>Ação</th>
 		</thread>
 
 		{% for i in trabalhos %}
-			<tr>
-				<td align="center" valign="middle"><a href="/trabalho/{{ i.id }}"> <input type="button" name="t{{ i.id }}" value="{{ i.nome }}"/></td>
+			{% if not i.removido %}
+				<tr>
+					<td align="center" valign="middle"><a href="/trabalho/{{ i.id }}"> <input type="button" name="t{{ i.id }}" value="{{ i.nome }}"/></td>
 
-				<td align="center" valign="middle"> {{ i.status }}</td>
-				{% if i.status == "Não enviado" or i.status == "Em execução" %}
-					<form action = "." method="post"> {% csrf_token %}
-					{% if i.status == "Não enviado" %}
-						<td> <input type="submit" name="{{ i.id }}" value="Submeter"/></a></td>
-					{% else %}
-						{% if i.status == "Em execução" %}
-							<td><input type="submit" name="{{ i.id }}" value="Encerrar"/></td>
-							<td><font color="red">{{ i.password }}</font></td>
+					<td align="center" valign="middle"> {{ i.status }}</td>
+					{% if i.status == "Não enviado" or i.status == "Em execução" %}
+						<form action = "." method="post"> {% csrf_token %}
+						{% if i.status == "Não enviado" %}
+							<td> <input type="submit" name="{{ i.id }}" value="Submeter"/></a></td>
+							<td> </td>
+							<td> </td>
+						{% else %}
+							{% if i.status == "Em execução" %}
+								<td><input type="submit" name="{{ i.id }}" value="Encerrar"/></td>
+								<td><font color="red">{{ i.password }}</font></td>
+								<td></td>
+							{% endif %}
 						{% endif %}
-					{% endif %}
-				{% else %}
-					<td> </td>
-					<td> </td>
-					<td><a href="/recebidos/{{ i.id }}"><input type="button" name="r{{ i.id }}" value="Recebidos"/></td>
-					</form>
+					{% else %}
+						<td> </td>
+						<td> </td>
+						<td><a href="/recebidos/{{ i.id }}"><input type="button" name="r{{ i.id }}" value="Recebidos"/></td>
+						</form>
 
-				{% endif %}
-			</tr>
+					{% endif %}
+					<form action = "." method="post"> {% csrf_token %}
+					<td> <input type="submit" name = "remover {{ i.id }}" value="remover"/><td>
+					</form>
+				</tr>
+			{% endif %}
 		{% endfor %}
 	</table>
 
@@ -53,18 +62,52 @@
 	<p>&nbsp;</p>
 	<h2>Trabalhos para fazer</h2>
 
+	<table>
+
+		<thread>
+			<th>Trabalho</th>
+			<th>Professor</th>
+			<th>Turma</th>
+			<th>KeyCode</th>
+			<th>Enviado</th>
+		</thread>
+
+
 	{% for i in trabalhos %}
+		{% if not i.removido %}
+			<tr>
+				<td>
+					<form action = "."	method="post"> {% csrf_token %}
+					<p><input type="submit" name= "submit {{ i.id }}"  value={{ i.nome }}></p>
+				</td>
 
+				<td>
+					{{ i.professor.user.username }}
+				</td>
 
-		<form action = "."	method="post"> {% csrf_token %}
-			<p><input type="submit" name= "submit {{ i.id }}"  value={{ i.professor.user.username }}>
-			KeyCode: <input type="text" name="keycode {{ i.id }}" required="required"/>
-		</p></form>
+				<td>
+					---
+				</td>
 
+				<td>
+					{% if not submissao %}
+						<input type="text" name="keycode {{ i.id }}" required="required"/>
+					{% else %}
+						<input type="text" name="keycode {{ i.id }}" value="{{ submissao.password }}"required="required"/>
+					{% endif %}
+
+					</form>
+				</td>
+
+				<td>
+				 	<img src="{{MEDIA_URL}}/media/yes.png"/>
+				</td>
+			 </tr> 
+		{% endif %}
 
 	{% endfor %}
 
-
+	</table>
 
 {% endif %}
 

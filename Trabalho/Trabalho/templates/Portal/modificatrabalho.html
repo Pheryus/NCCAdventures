@@ -8,10 +8,11 @@
 	<link rel="stylesheet" href="{% static 'css/trabalho.css' %}">
 	<h3>Modificando trabalho</h3>
 	<form action = "."method="post"> {% csrf_token %}
-		{{ form.as_p }}
-		<input type="hidden" name="prox" value="{{ prox }}" />
-		<p><input type="submit" value="Enviar"></p>
-
+		
+		<p>Nome: {{ form.nome }}</p>
+		<p>Descrição<p> {{ form.descricao }}</p></p>
+		<p>Arquivo: {{ form.file }} </p>
+		<input type="submit" value="Modificar">
 	</form>
 <br><br><br>
 
