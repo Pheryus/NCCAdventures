@@ -54,7 +54,7 @@
 					<td> <input type="submit" name = "remover {{ i.id }}" value="remover"/><td>
 					</form>
 				</tr>
-			{% endif %}
+			{% 	endif %}
 		{% endfor %}
 	</table>
 
@@ -86,16 +86,11 @@
 				</td>
 
 				<td>
-					---
+					{{ i.turma }}
 				</td>
 
 				<td>
-					{% if not submissao %}
-						<input type="text" name="keycode {{ i.id }}" required="required"/>
-					{% else %}
-						<input type="text" name="keycode {{ i.id }}" value="{{ submissao.password }}"required="required"/>
-					{% endif %}
-
+					<input type="text" name="keycode {{ i.id }}" required="required"/>
 					</form>
 				</td>
 

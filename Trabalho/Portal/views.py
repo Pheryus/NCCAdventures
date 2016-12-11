@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from Usuarios.models import Usuario, Turma
 from Portal.models import *
-from Portal.forms import TrabalhoForm
+from Portal.forms import TrabalhoForm, SubmissaoForm
 from django.core.urlresolvers import reverse
 import random
 import string
@@ -19,21 +19,23 @@ def home(request):
 
 
 def homeAluno(request, usuario):
-	trabalhos = Trabalho.objects.filter(status="Em execução")
-	submissao = Submissao.objects.filter(aluno__id=usuario.id)
-	if submissao:
-		submissao = submissao[0]
+
+	trabalhos = []
+
+	turmas = Turma.objects.filter(alunos__id = usuario.id )
+
+	for i in turmas:
+		trabalhos += Trabalho.objects.filter(status = "Em execução", turma = i.id)
 
 	if request.method == "POST":
 		for i in trabalhos:
 			if request.POST.get("submit " + str(i.id)):
-				if request.POST.get("keycode " + str(i.id), -1) == Trabalho.objects.filter(id=i.id)[0].password \
-				or submissao:
-					return HttpResponseRedirect(reverse("Portal_visualizaTrabalho",  kwargs = {"id" : i.id } ))
+				if request.POST.get("keycode " + str(i.id), -1) == Trabalho.objects.filter(id=i.id)[0].password:
+					return HttpResponseRedirect(reverse("Portal_criaSubmissao",  kwargs = {"id" : i.id } ))
 				else:
 					return HttpResponseRedirect(reverse('Portal_home'))
 
-	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos, 'submissao' : submissao})
+	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos })
 
 def homeProfessor(request, usuario):
 	trabalhos = Trabalho.objects.filter(professor__id=usuario.id)
@@ -43,7 +45,6 @@ def homeProfessor(request, usuario):
 			#mudar estado de algum trabalho
 
 			if not i.removido:
-				print(request.POST)
 				if request.POST.get(str(i.id)):
 					if (i.status == "Não enviado"):
 						i.status = "Em execução"
@@ -72,19 +73,18 @@ def criaTrabalho(request):
 		return Http404
 
 	if request.method == "POST":
-		form = TrabalhoForm(request.POST, request.FILES)
+		form = TrabalhoForm(usuario.id, request.POST, request.FILES)
 		if form.is_valid():
 			form.salvandoInstancia(usuario)
 			return HttpResponseRedirect(reverse('Cria_Trab'))
 	else:
-		form = TrabalhoForm()
+		form = TrabalhoForm(usuario.id)
 	return render(request, 'Portal/criatrabalho.html', {'form' : form})
 
 
 @login_required
 def modificaTrabalho(request, id):
 	usuario = getUsuario(request)
-
 
 	"""Checa se é professor"""
 
@@ -115,7 +115,6 @@ def trabalhosRecebidos(request, id):
 #Testa se o professor é professor da turma especifica
 def autenticacaoProfessor(trabalhos, id):
 	for t in trabalhos:
-		print(t.id, id)
 		if t.id == int(id):
 			return True
 	return False
@@ -138,19 +137,67 @@ def criandoSubmissao(usuario, id, trabalho, password):
 	new.save()
 	return new
 
-def visualizaTrabalho(request, id):
+def autenticacaoDownload(request, trabalho_id):
+	usuario = getUsuario(request)
+
+	turmas = Turma.objects.filter(alunos__id = usuario.id)
+	trabalhos = Trabalho.objects.filter(id = trabalho_id)
+
+	for i in trabalhos:
+		for j in turmas:
+			if i.turma.id == j.id:
+				return True
+	return False
+ 
+def downloadTrabalho(request, trabalho_id):
+
+	if autenticacaoDownload(request, trabalho_id):
+		trabalhos = Trabalho.objects.filter(id = trabalho_id)
+		if trabalhos:
+			trabalho = trabalhos[0]
+		else:
+			raise Http404
+
+		filename = trabalho.file.name.split('/')[-1]
+		arquivo = HttpResponse(trabalho.file, content_type='media/')
+		arquivo['Content-Disposition'] = 'attachment; filename=%s' % filename
+		return arquivo
+
+	else:
+		raise Http404
+	
+
+
+def criaSubmissao(request, id):
 	usuario = getUsuario(request)
 
 	trabalho = Trabalho.objects.filter(id=id)[0]
 	submissao = Submissao.objects.filter(trabalhoKey=trabalho, aluno=usuario)
-	form = TrabalhoForm(instance=trabalho)
+	
+	#caso nao exista submissao ainda
 	if not submissao:
-		submissao = criandoSubmissao(usuario, id, trabalho, trabalho.password)
+		if request.method == "POST":
+			form = SubmissaoForm(request.POST, request.FILES)
+			if form.is_valid():
+				form.save(usuario, trabalho, trabalho.password)
+				return HttpResponseRedirect(reverse('Portal_criaSubmissao', kwargs = {"id" : id } ))
+		else:
+			form = SubmissaoForm()
+
 	else:
-		submissao = submissao[0]
+		if request.method == "POST":
+
+			form = SubmissaoForm(request.POST, request.FILES, instance=submissao[0])
+
+			if form.is_valid():
+				form.resave()
+				return HttpResponseRedirect(reverse('Portal_criaSubmissao', kwargs = {"id" : id } ))
+		else:
+			form = SubmissaoForm(instance=submissao[0])
+
 
 	professor = trabalho.professor
-	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho, "submissao" : submissao, "form" : form})
+	return render(request, 'Portal/vertrabalho.html', {'professor' : professor, 'trabalho' : trabalho, "form" : form})
 
 @login_required
 def turma(request, id):

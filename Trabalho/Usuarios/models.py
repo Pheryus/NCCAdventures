@@ -13,9 +13,12 @@ class Usuario(models.Model):
 
 
 class Turma(models.Model):
-	nome = models.CharField(max_length=30)
+	nome = models.CharField(u'Nome',max_length=30)
 	professor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 	alunos = models.ManyToManyField(Usuario, related_name="Estudantes")
 
 	def __unicode__(self):
 		return "%s" % (self.nome)
+
+	def __str__(self):
+		return self.nome
