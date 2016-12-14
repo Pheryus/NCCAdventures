@@ -50,7 +50,37 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# LDAP
+LDAP_SERVERS = [
+    {
+        'host': 'ldap-teste.inf.ufsm.br',
+        'port': 389,
+        'use_ssl': False,
+    }
+]
 
+LDAP_SEARCH_BASE = "dc=inf,dc=ufsm,dc=br"
+LDAP_USER_SEARCH_FILTER = "(&(uid=%s)(objectClass=posixAccount))"
+LDAP_USER_MODEL_USERNAME_FIELD = 'uid'
+LDAP_MIN_GROUPS = ["admrede", ]
+LDAP_BIND_USER = "cn=admin,dc=inf,dc=ufsm,dc=br"
+LDAP_BIND_PWD = "amigao"
+LDAP_GROUPS_SEARCH_FILTER = "(&(objectClass=posixGroup))"
+LDAP_GROUP_MEMBER_ATTRIBUTE = "member"
+LDAP_SUPERUSER_GROUPS = ["CN=admrede,dc=inf,dc=ufsm,dc=br", ]
+LDAP_STAFF_GROUPS = ["CN=admrede,dc=inf,dc=ufsm,dc=br", ]
+LDAP_GROUPS_MAP = {
+    'admrede': "cn=admrede,dc=inf,dc=ufsm,dc=br",
+}
+
+LDAP_ATTRIBUTES_MAP = {
+    'username': 'uid',
+    'password': 'userPassword',
+}
+
+
+
+AUTHENTICATION_BACKENDS = ("django_auth_ldap3_ad.auth.LDAP3ADBackend",)
 ROOT_URLCONF = 'Trabalho.urls'
 
 TEMPLATES = [

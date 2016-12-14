@@ -68,9 +68,9 @@ def geraSenha(n):
 
 @login_required
 def criaTrabalho(request):
-	usuario = getUsuario(request)
-	if usuario.grau != "Professor":
-		return Http404
+	#usuario = getUsuario(request)
+	#if usuario.grau != "Professor":
+	#	return Http404
 
 	if request.method == "POST":
 		form = TrabalhoForm(usuario.id, request.POST, request.FILES)
@@ -128,7 +128,7 @@ def ehProfessor(usuario):
 def getUsuario(request):
 	current_user = request.user
 	id_user = current_user.id
-	user = Usuario.objects.filter(user_id=id_user)
+	user = User.objects.filter(user_id=id_user)
 	return user[0]
 
 
