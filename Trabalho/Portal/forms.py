@@ -21,7 +21,6 @@ class TrabalhoForm(forms.ModelForm):
 		if not (self.cleaned_data.get('file') or self.cleaned_data.get('descricao')):
 			raise forms.ValidationError('É necessário ter um arquivo ou descrição')
 
-
 	def salvandoInstancia(self, professor):
 		trabalho = Trabalho(nome=self.cleaned_data.get('nome'),
 			descricao=self.cleaned_data.get('descricao'),
@@ -38,23 +37,23 @@ class SubmissaoForm(forms.ModelForm):
 		model = Submissao
 		fields = ['nome', 'file', 'trabalho']
 
-
+	"""
 	def clean(self):
 		if not (self.cleaned_data.get('file') or self.cleaned_data.get('trabalho')):
 			raise forms.ValidationError('É necessário enviar pelo menos uma descrição textual ou um arquivo com o trabalho!')
+	"""
 
-
-	def save(self, alunoid, trabalhoid, password):
+	def save(self, alunoid, trabalhoid, password, file):
 		data = self.cleaned_data
 
-		submissao = Submissao(nome=data['nome'], file=data['file'], trabalho=data['trabalho'], \
+		submissao = Submissao(nome=data['nome'], file=file, trabalho=data['trabalho'], \
 			aluno=alunoid, trabalhoKey=trabalhoid, password=password)
 		submissao.save()
 
-	def resave(self):
+	def resave(self, file):
 		data = self.cleaned_data
 		self.instance.nome = data['nome']
-		self.instance.file = data['file']
+		self.instance.file = file
 		self.instance.trabalho = data['trabalho']
 		self.instance.save()
 

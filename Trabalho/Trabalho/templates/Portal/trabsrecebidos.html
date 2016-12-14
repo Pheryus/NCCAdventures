@@ -4,11 +4,21 @@
 
 {% block content %}
 
-{% for i in {{ turmas }} %}
 
-    <p>{{ i.nome }} </p>
+<p>{{ trabalho.nome }}</p>
+
+<table>
+		<thread>
+			<th>Aluno</th>
+			<th>Trabalho</th>
+			<th>Download</th>
+		</thread>
 
 
-
-
+{% for i in trabs %}
+	<tr>
+		<td> {{ i.aluno.user.username }}</td>
+		<td>Arquivo.txt</td>
+		<td> {{ i.file }}</td>
+{% endfor %}
 {% endblock %}

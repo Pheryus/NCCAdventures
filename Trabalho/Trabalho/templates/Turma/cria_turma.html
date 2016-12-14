@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar Turma{% endblock %}
+
+{% block content %}
+
+<h1> Criar Turma </h1>
+<form action = "."method="post"> {% csrf_token %}
+
+    Professor <select name="org_list">
+    <option selected="selected">---SELECT---</option>
+    {% for i in professor %}
+        <option value = "{{ i.uidNumber }}">{{ i.cn }} </option>
+    {% endfor %}
+    </select>
+    <p>Matéria<input type="text" name="nomeMateria" required="required"></p>
+    <input type="hidden" name="prox" value="{{ prox }}" />
+    <p><input type="submit" value="Enviar"></p>
+</form>
+
+
+
+<h2>Lista de Turmas Criadas</h2>
+<table>
+    <thread>
+        <th>Nome Turma</th>
+        <th>Professor</th>
+    </thread>
+
+{% for i in turmas %}
+    <tr>
+        <td><p>{{ i.nome }}</p></td>
+
+        {% for j in professor %}
+            {% if j.uidNumber.value == i.professor %}
+                <td><p>{{ j.cn }}</p></td>
+            {% endif %}
+        {% endfor %}
+{% endfor %}
+
+</table>
+{% endblock %}
