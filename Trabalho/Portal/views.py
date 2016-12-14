@@ -109,8 +109,13 @@ def modificaTrabalho(request, id):
 
 
 def trabalhosRecebidos(request, id):
-	trabs = Submissao.objects.filter(trabalhoKey__id=id)
-	return render(request, 'Portal/trabsrecebidos.html', {'trabs' : trabs})
+	trabalho = Trabalho.objects.filter(id=id)
+	if trabalho:
+		trabalho = trabalho[0]
+	else:
+		raise Http404
+	trabsRecebidos = Submissao.objects.filter(trabalhoKey__id=id)
+	return render(request, 'Portal/trabsrecebidos.html', {'trabalho': trabalho, 'trabs' : trabsRecebidos })
 
 #Testa se o professor é professor da turma especifica
 def autenticacaoProfessor(trabalhos, id):
@@ -178,8 +183,9 @@ def criaSubmissao(request, id):
 	if not submissao:
 		if request.method == "POST":
 			form = SubmissaoForm(request.POST, request.FILES)
+			file = request.POST.get['file']
 			if form.is_valid():
-				form.save(usuario, trabalho, trabalho.password)
+				form.save(usuario, trabalho, trabalho.password, file)
 				return HttpResponseRedirect(reverse('Portal_criaSubmissao', kwargs = {"id" : id } ))
 		else:
 			form = SubmissaoForm()
