@@ -28,6 +28,7 @@ def login_view(request):
 		prox = request.GET.get('prox', '/login/')
 		username = request.POST.get('login')
 		user = authenticate(username= username, password=request.POST.get('password'))
+		print(user)
 		if user is not None:
 			login(request, user)
 			return HttpResponseRedirect(reverse('Portal_home'))

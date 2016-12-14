@@ -15,7 +15,7 @@ def home(request):
 
 	usuario = ldap.buscaLogin(request.user.username)
 
-	if "alunos" in str(usuario.homeDirectory):
+	if "alunos" not in str(usuario.homeDirectory):
 		return homeProfessor(request, usuario)
 	else:
 		return homeAluno(request, usuario)

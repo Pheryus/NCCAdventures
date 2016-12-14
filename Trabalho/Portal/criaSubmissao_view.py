@@ -21,7 +21,7 @@ def criaSubmissao(request, id):
             file = request.POST.get['file']
             if form.is_valid():
                 form.save(usuario, trabalho, trabalho.password, file)
-                return HttpResponseRedirect(reverse('Portal_criaSubmissao', kwargs={"id": id}))
+                return HttpResponseRedirect(reverse('Portal_modificaSubmissao', kwargs={"id": id}))
         else:
             form = SubmissaoForm()
 
@@ -29,10 +29,9 @@ def criaSubmissao(request, id):
         if request.method == "POST":
 
             form = SubmissaoForm(request.POST, request.FILES, instance=submissao[0])
-
             if form.is_valid():
                 form.resave()
-                return HttpResponseRedirect(reverse('Portal_criaSubmissao', kwargs={"id": id}))
+                return HttpResponseRedirect(reverse('Portal_modificaSubmissao', kwargs={"id": id}))
         else:
             form = SubmissaoForm(instance=submissao[0])
 

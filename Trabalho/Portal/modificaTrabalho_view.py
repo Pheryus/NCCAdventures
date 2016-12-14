@@ -24,7 +24,7 @@ def modificaTrabalho(request, id):
 	trabalho = trabalho[0]
 	print(trabalho)
 	if request.method == "POST":
-		form = TrabalhoForm(request.POST,usuario.uidNumber.value, instance=trabalho)
+		form = TrabalhoForm(usuario.uidNumber.value, request.POST, instance=trabalho)
 		if form.is_valid():
 			form.save(usuario)
 			return HttpResponseRedirect(reverse('Portal_home'))
