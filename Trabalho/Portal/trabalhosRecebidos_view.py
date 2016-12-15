@@ -1,5 +1,4 @@
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from Usuarios.models import Usuario, Turma
+from django.http import Http404
 from Portal.models import Trabalho, Submissao
 from django.shortcuts import render
 

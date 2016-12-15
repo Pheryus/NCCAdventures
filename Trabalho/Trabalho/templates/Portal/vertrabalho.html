@@ -9,33 +9,28 @@
 <link rel="stylesheet" href="{% static 'css/trabalho.css' %}">
 
 <h2>Nome : {{ trabalho.nome }} </h2>
-<p>Professor responsável: {{ professor.user.username }}</p>
+<p>Professor responsável: {{ trabalho.nomeProfessor }}</p>
 
 <p><h3>Descrição</h3></p>
 <p>{{ trabalho.descricao }}</p>
 
- <p>&nbsp;
-
+<p></p>
 <form action = "." method="post"> {% csrf_token %}
-<p>Arquivo: {{ trabalho.file.name }}    <a href="/files/{{ trabalho.id }}"><input type="button" value="Download"></a></p>
-
- <p>&nbsp; 
-
-<form action = "." method="post" {% csrf_token %}
-<p>Nome: {{ form.nome }}</p>
-
-<p>Trabalho: {{ form.trabalho }}</p>
-
-<p>Enviar Arquivo: {{ form.file }}</p>
-
-
-<p><input type="submit" value="Enviar Trabalho"></p>
-
+<p>Download: <a href="/files/{{ trabalho.id }}"><input type="button" value="Download"></a></p>
 </form>
 
-	<footer>
-		  <a href="/home"> Home </a>
-    </footer>
+
+<form action = "." enctype="multipart/form-data" method="post"> {% csrf_token %}
+<p>{{ form.as_p }}</p>
+<input type="hidden" name="prox" value="{{ prox }}" />
+
+<p><input type="submit" value="Enviar Trabalho"></p>
+</form>
+
+
+<footer>
+      <a href="/home"> Home </a>
+</footer>
 
 
 {% endblock %}

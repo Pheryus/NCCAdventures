@@ -17,7 +17,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from Portal import criarTrabalho_view as criaTrab_view, modificaTrabalho_view as modificaTrab_view, trabalhosRecebidos_view, criaSubmissao_view
+from Portal import criarTrabalho_view as criaTrab_view, modificaTrabalho_view as modificaTrab_view, \
+    trabalhosRecebidos_view, Submissao_view
 
 from Usuarios.views import *
 from Portal.views import *
@@ -30,11 +31,11 @@ urlpatterns = [
     url(r'^logout/$', logout_view, name="Usuarios_logout"),
     url(r'^home/$', home, name="Portal_home"),
     url(r'^criatrab/$', criaTrab_view.criaTrabalho, name="Cria_Trab"),
-    url(r'^turma/([0-9]+)/$', turma, name="Portal_turma"),
-    url(r'^trabalho/([0-9]+)/$', modificaTrab_view.modificaTrabalho, name="Portal_modificaTrabalho"),
-    url(r'^trab/(?P<id>\d+)/$', criaSubmissao_view.criaSubmissao, name="Portal_criaSubmissao"),
+    #url(r'^turma/([0-9]+)/$', turma, name="Portal_turma"),
+    url(r'^trabalho/(?P<id>\d+)/$', modificaTrab_view.modificaTrabalho, name="Portal_modificaTrabalho"),
+    url(r'^trab/(?P<id>\d+)/$', Submissao_view.TestaSubmissao, name="Portal_Submissao"),
     url(r'^recebidos/([0-9]+)/$', trabalhosRecebidos_view.trabalhosRecebidos, name="Portal_trabalhoRecebidos"),
-    url(r'^files/(?P<trabalho_id>\d+)/$', downloadTrabalho, name="Portal_downloadTrabalho"),
+    #url(r'^files/(?P<trabalho_id>\d+)/$', downloadTrabalho, name="Portal_downloadTrabalho"),
     url(r'^criaturma/$', criaTurma, name="Turma.Cria_Turma")
 ]
 

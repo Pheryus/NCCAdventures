@@ -10,6 +10,7 @@ def path_diretorio_professor(instance, filename):
 class Trabalho(models.Model):
 	nome = models.CharField(max_length=30)
 	professor = models.IntegerField()
+	nomeProfessor = models.CharField(max_length=30)
 	descricao = models.CharField(max_length=500, blank=True)
 	file =  models.FileField(upload_to=path_diretorio_professor, blank=True, null=True)
 	status = models.CharField(max_length=30, default="Não enviado")
@@ -26,6 +27,8 @@ def path_diretorio_aluno(instance, filename):
 class Submissao(models.Model):
 	nome = models.CharField(max_length=30)
 	aluno = models.IntegerField()
+	login = models.CharField(max_length=30)
+	nomealuno = models.CharField(max_length=30)
 	trabalhoKey = models.ForeignKey(Trabalho, on_delete = models.CASCADE)
 	trabalho = models.CharField(max_length=500, blank=True)
 	file = models.FileField(upload_to=path_diretorio_aluno, blank=True, null=True)

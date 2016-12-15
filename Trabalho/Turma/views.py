@@ -10,7 +10,7 @@ def criaTurma(request):
     professor = []
     alunos = []
     for i in ldap.listaUsuarios():
-        if "aluno" not in str(i.homeDirectory):
+        if "aluno" in str(i.homeDirectory):
             alunos.append(i)
         else:
             professor.append(i)

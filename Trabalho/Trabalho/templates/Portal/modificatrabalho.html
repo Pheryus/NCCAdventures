@@ -6,13 +6,15 @@
 
 	{% load staticfiles %}
 	<link rel="stylesheet" href="{% static 'css/trabalho.css' %}">
-	<h3>Modificando trabalho</h3>
-	<form action = "."method="post"> {% csrf_token %}
-		
-		<p>Nome: {{ form.nome }}</p>
-		<p>Descrição<p> {{ form.descricao }}</p></p>
-		<input type="file" name="Arquivo"/>
-		<input type="submit" value="Modificar">
+	<h3>Modificar trabalho</h3>
+	<h3> {{ msg }}</h3>
+	<form action = "." enctype="multipart/form-data" method="post"> {% csrf_token %}
+		{{ form.as_p }}
+
+		<input type="hidden" name="prox" value="{{ prox }}" />
+		<input type="hidden" name="msg" value="{{ msg }}" />
+		<p><input type="submit" value="Enviar"></p>
+
 	</form>
 <br><br><br>
 

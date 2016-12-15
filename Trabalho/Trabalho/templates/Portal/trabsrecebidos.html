@@ -13,12 +13,13 @@
 			<th>Trabalho</th>
 			<th>Download</th>
 		</thread>
-
+</table>
 
 {% for i in trabs %}
 	<tr>
-		<td> {{ i.aluno.user.username }}</td>
-		<td>Arquivo.txt</td>
-		<td> {{ i.file }}</td>
+		<td> {{ i.nomealuno }}</td>
+		<td> {{ i.trabalho }} </td>
+		<td><a href="../../media/{{ i.file.name }}" ><input type="button" value="Download"></a></td>
+	</tr>
 {% endfor %}
 {% endblock %}

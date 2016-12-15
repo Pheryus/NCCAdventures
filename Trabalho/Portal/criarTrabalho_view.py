@@ -9,7 +9,7 @@ from ldap import ncc
 
 def ehProfessor(usuario):
 	# testa se é professor
-	if "alunos" not in str(usuario.homeDirectory):
+	if "alunos" in str(usuario.homeDirectory):
 		raise Http404
 
 @login_required
@@ -17,13 +17,14 @@ def criaTrabalho(request):
 	ldap = ncc.Ldap()
 	usuario = ldap.buscaLogin(request.user.username)
 	ehProfessor(usuario)
-
+	msg = ""
 	if request.method == "POST":
 		form = TrabalhoForm(usuario.uidNumber.value, request.POST, request.FILES)
 		if form.is_valid():
-			form.salvandoInstancia(usuario.uidNumber.value)
-			return HttpResponseRedirect(reverse('Cria_Trab'))
+			msg = "Trabalho adicionado com sucesso!"
+			id = form.salvandoInstancia(usuario.uidNumber.value, usuario.cn.value)
+			return HttpResponseRedirect(reverse("Portal_modificaTrabalho", kwargs = {"id" :id }))
 	else:
 		form = TrabalhoForm(usuario.uidNumber.value)
-	return render(request, 'Portal/criatrabalho.html', {'form' : form})
+	return render(request, 'Portal/criatrabalho.html', {'form' : form, 'msg' : msg})
 

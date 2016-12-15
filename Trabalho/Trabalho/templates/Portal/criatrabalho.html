@@ -6,12 +6,12 @@
 
 	<link rel="stylesheet" href="{% static 'css/trabalho.css' %}">
 	<h3>Crie um trabalho</h3>
+	<h2> {{ msg }}</h2>
 	<form action = "." enctype="multipart/form-data" method="post"> {% csrf_token %}
 		{{ form.as_p }}
 		
 		<input type="hidden" name="prox" value="{{ prox }}" />
 		<p><input type="submit" value="Enviar"></p>
-
 
 	</form>
 	

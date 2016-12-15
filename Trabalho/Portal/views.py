@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from Usuarios.models import Usuario, Turma
 from Portal.models import *
-from Portal.forms import TrabalhoForm, SubmissaoForm
 from django.core.urlresolvers import reverse
 from ldap import ncc
 import random
@@ -30,15 +28,23 @@ def homeAluno(request, usuario):
 	for i in turmas:
 		trabalhos += Trabalho.objects.filter(status = "Em execução", turma = i.id)
 
+	submissao = Submissao.objects.filter(aluno=usuario.uidNumber.value)
+	keysubmissao = []
+	for i in submissao:
+		keysubmissao.append(i.trabalhoKey)
+
 	if request.method == "POST":
 		for i in trabalhos:
 			if request.POST.get("submit " + str(i.id)):
+				print(Trabalho.objects.filter(id=i.id)[0].password)
+				print(i.id)
 				if request.POST.get("keycode " + str(i.id), -1) == Trabalho.objects.filter(id=i.id)[0].password:
-					return HttpResponseRedirect(reverse("Portal_criaSubmissao",  kwargs = {"id" : i.id } ))
+					print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+					return HttpResponseRedirect(reverse("Portal_Submissao",  kwargs = {"id" : i.id } ))
 				else:
 					return HttpResponseRedirect(reverse('Portal_home'))
 
-	return render(request, 'Portal/home.html', {'usuario': usuario, 'trabalhos' : trabalhos, "flagAluno" : flagAluno})
+	return render(request, 'Portal/home.html', {'usuario': usuario, 'keysubmissao' : keysubmissao, 'trabalhos' : trabalhos, "flagAluno" : flagAluno})
 
 def homeProfessor(request, usuario):
 	trabalhos = Trabalho.objects.filter(professor = usuario.uidNumber.value)
@@ -70,51 +76,6 @@ def geraSenha(n):
 	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(n))
 
 
-#Testa se o professor é professor da turma especifica
-def autenticacaoProfessor(trabalhos, id):
-	for t in trabalhos:
-		if t.id == int(id):
-			return True
-	return False
 
 
-def autenticacaoDownload(request, trabalho_id):
-	usuario = ncc.Ldap().buscaLogin(request.user.username)
 
-	#turmas = Turma.objects.filter(alunos__id = usuario.id)
-	trabalhos = Trabalho.objects.filter(id = trabalho_id)
-
-	for i in trabalhos:
-		for j in turmas:
-			if i.turma.id == j.id:
-				return True
-	return False
- 
-def downloadTrabalho(request, trabalho_id):
-
-	#if autenticacaoDownload(request, trabalho_id):
-	trabalhos = Trabalho.objects.filter(id = trabalho_id)
-	if trabalhos:
-		trabalho = trabalhos[0]
-	else:
-		raise Http404
-
-	filename = trabalho.file.name.split('/')[-1]
-	arquivo = HttpResponse(trabalho.file, content_type='media/')
-	arquivo['Content-Disposition'] = 'attachment; filename=%s' % filename
-	return arquivo
-
-
-@login_required
-def turma(request, id):
-	usuario = getUsuario(request)
-	if usuario.grau == "Professor":
-		turmas = Turma.objects.filter(professor__id=usuario.id, id=id)
-	else:
-		turmas = Turma.objects.filter(alunos__id=usuario.id, id=id)
-
-	if not turmas:
-		raise Http404
-	else:
-		turma = turmas[0]
-	return render(request, 'Portal/turma.html', {'turma' : turma})
