@@ -79,7 +79,6 @@
 				<td>
 					<form action = "."	method="post"> {% csrf_token %}
 					<p><input type="submit" name= "submit {{ i.id }}"  value="{{ i.nome }}"></p>
-					</form>
 				</td>
 
 				<td>
@@ -91,16 +90,15 @@
 				</td>
 
 				<td>
-					<form action = "."	method="post"> {% csrf_token %}
 					<input type="text" name="keycode {{ i.id }}" required="required"/>
 					</form>
 				</td>
 
 				<td>
 					{% if i in keysubmissao %}
-						<img src="{{MEDIA_URL}}/media/yes.png"/>
+						<img src="{% static "yes.png" %}"/>
 					{% else %}
-						<img src="{{MEDIA_URL}}/media/no.png"/>
+						<img src="{% static "no.png" %}"/>
 					{% endif %}
 				</td>
 			 </tr> 

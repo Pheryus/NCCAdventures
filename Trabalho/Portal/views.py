@@ -36,10 +36,7 @@ def homeAluno(request, usuario):
 	if request.method == "POST":
 		for i in trabalhos:
 			if request.POST.get("submit " + str(i.id)):
-				print(Trabalho.objects.filter(id=i.id)[0].password)
-				print(i.id)
 				if request.POST.get("keycode " + str(i.id), -1) == Trabalho.objects.filter(id=i.id)[0].password:
-					print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					return HttpResponseRedirect(reverse("Portal_Submissao",  kwargs = {"id" : i.id } ))
 				else:
 					return HttpResponseRedirect(reverse('Portal_home'))

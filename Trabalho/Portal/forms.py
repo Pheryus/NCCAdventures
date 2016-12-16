@@ -62,6 +62,7 @@ class SubmissaoForm(forms.ModelForm):
 		submissao = Submissao(nome=data['nome'], file=data['file'], trabalho=data['trabalho'], \
 			aluno=alunoid, login=login, trabalhoKey=trabalhoid, password=password)
 		submissao.save()
+		return submissao.id
 
 	def resave(self):
 		data = self.cleaned_data

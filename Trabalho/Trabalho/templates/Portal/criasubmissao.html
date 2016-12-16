@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Trabalho{% endblock %}
+
+{% block content %}
+
+
+<link rel="stylesheet" href="{% static 'css/trabalho.css' %}">
+
+<h2>Nome : {{ trabalho.nome }} </h2>
+<p>Professor responsável: {{ trabalho.nomeProfessor }}</p>
+
+<p><h3>Descrição</h3></p>
+<p>{{ trabalho.descricao }}</p>
+
+<p></p>
+{% if trabalho.file %}
+<form action = "." method="post"> {% csrf_token %}
+      <p>Download: <a href="/media/{{ trabalho.file }}"><input type="button" value="Download"></a></p>
+</form>
+{% endif %}
+
+
+<form action = "." enctype="multipart/form-data" method="post"> {% csrf_token %}
+<p>{{ form.as_p }}</p>
+<input type="hidden" name="prox" value="{{ prox }}" />
+
+
+{% if   %}
+<p><input type="submit" value="Enviar Trabalho"></p>
+</form>
+
+
+<footer>
+      <a href="/home"> Home </a>
+</footer>
+
+
+{% endblock %}

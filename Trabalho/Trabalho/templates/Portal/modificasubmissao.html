@@ -15,16 +15,18 @@
 <p>{{ trabalho.descricao }}</p>
 
 <p></p>
+{% if trabalho.file %}
 <form action = "." method="post"> {% csrf_token %}
-<p>Download: <a href="/files/{{ trabalho.id }}"><input type="button" value="Download"></a></p>
+      <p>Download: <a href="/media/{{ trabalho.file }}"><input type="button" value="Download"></a></p>
 </form>
+{% endif %}
 
 
 <form action = "." enctype="multipart/form-data" method="post"> {% csrf_token %}
 <p>{{ form.as_p }}</p>
 <input type="hidden" name="prox" value="{{ prox }}" />
 
-<p><input type="submit" value="Enviar Trabalho"></p>
+<p><input type="submit" value="Modificar Trabalho"></p>
 </form>
 
 

@@ -24,13 +24,13 @@ def criaSubmissao(request, usuario, trabalho):
         form = SubmissaoForm(request.POST, request.FILES)
         file = request.POST.get('file')
         if form.is_valid():
-            form.save(usuario.uidNumber.value, trabalho, trabalho.password, usuario.uid.value)
+            id = form.save(usuario.uidNumber.value, trabalho, trabalho.password, usuario.uid.value)
             return HttpResponseRedirect(reverse('Portal_Submissao', kwargs={"id": id}))
     else:
         form = SubmissaoForm()
 
     professor = trabalho.professor
-    return render(request, 'Portal/vertrabalho.html', {'professor': professor, 'trabalho': trabalho, "form": form})
+    return render(request, 'Portal/criasubmissao.html', {'professor': professor, 'trabalho': trabalho, "form": form})
 
 
 def modificaSubmissao(request,  trabalho, id, submissao):
@@ -43,4 +43,4 @@ def modificaSubmissao(request,  trabalho, id, submissao):
         form = SubmissaoForm(instance=submissao[0])
 
     professor = trabalho.professor
-    return render(request, 'Portal/vertrabalho.html', {'professor': professor, 'trabalho': trabalho, "form": form})
+    return render(request, 'Portal/modificasubmissao.html', {'professor': professor, 'trabalho': trabalho, "form": form})
